@@ -1,7 +1,7 @@
 import mariadb
 import sys
 
-# Connect to MAriaDB
+# Connect to MariaDB
 try:
     conn = mariadb.connect(
         user="myadmin",
