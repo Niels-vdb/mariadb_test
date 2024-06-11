@@ -1,31 +1,23 @@
-from services.database.Database import Database
+from database.Database import Database
+from database.QueryManager import QueryManager
+import os
+
+sql_dir = os.path.join(os.path.dirname(__file__), 'database/sql_files')
+qm = QueryManager(sql_dir)
 
 database = Database()
+database.connection("myadmin", "password")
 
-book_list = []
+# Accessing the switch_database.sql file within the util directory
+switch_database = qm.get_sql("util.switch_database.sql")
+insert_book = qm.get_sql("insert.insert_book.sql")
+delete_book = qm.get_sql("delete.delete_book.sql")
+create_database = qm.get_sql("util.create_database.sql")
 
-conn = database.connection("myadmin", "password")
+print(switch_database)
 
-database.query_executor("USE test_db;")
-
-database.query_executor(
-    """INSERT INTO books (Title,SeriesID,AuthorID) 
-VALUES('A Game of Thrones',3,3); """
-)
-
-books = database.select_query("SELECT * FROM books;")
-for bookID, Title, SeriesID, AuthorID in books:
-    book_list.append(f"{bookID}: {Title}")
-print(book_list)
-
-book_list.clear()
-
-database.query_executor("DELETE FROM books WHERE Title = 'A Game of Thrones';")
-
-books = database.select_query("SELECT * FROM books;")
-for bookID, Title, SeriesID, AuthorID in books:
-    book_list.append(f"{bookID}: {Title}")
-print(book_list)
-
-
-database.close_connection()
+# Ensure arguments are passed as tuples
+database.query_executor(switch_database, ("test_db",))
+database.query_executor(insert_book, ("A Game of Thrones", 3, 3))
+# database.query_executor(delete_book, ("A Game of Thrones",))
+database.query_executor(create_database, ("prod_db",))

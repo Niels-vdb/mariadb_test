@@ -7,7 +7,7 @@ sys.path.append(root_dir)
 
 my_path = sys.path
 
-from services.database.Database import Database
+from database.Database import Database
 
 database = Database()
 
